@@ -8,7 +8,7 @@ Basic usage of this module is as follows:
 
 ```hcl
 module "firewall_rules" {
-  source       = "terraform-google-modules/network/google//modules/firewall-rules"
+  source       = "github.com/ucraft-com/terraform-modules//firewall_rules?ref=0.2.0"
   project_id   = var.project_id
   network_name = module.vpc.network_name
   rules = [{

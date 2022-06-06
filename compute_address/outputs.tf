@@ -1,9 +1,9 @@
-output "address" {
-  description = "All compute address attributes."
-  value       = try(google_compute_address.address, null)
+output "zones_available" {
+  description = "Output gc zones having free space."
+  value       = "{data.google_compute_zones.available.names}"
 }
 
-output "module_enabled" {
-  description = "Whether the module is enabled."
-  value       = var.module_enabled
+output "addresses" {
+  description = "VM IP addresses."
+  value       = join(",", google_compute_address.instances.*.address)
 }

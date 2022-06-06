@@ -15,27 +15,6 @@ resource "google_compute_disk" "instances" {
 
   image = var.disk_image
 
-  provisioner "local-exec" {
-    command    = var.disk_create_local_exec_command_or_fail
-    on_failure = "fail"
-  }
-
-  provisioner "local-exec" {
-    command    = var.disk_create_local_exec_command_and_continue
-    on_failure = "continue"
-  }
-
-  provisioner "local-exec" {
-    when       = "destroy"
-    command    = var.disk_destroy_local_exec_command_or_fail
-    on_failure = "fail"
-  }
-
-  provisioner "local-exec" {
-    when       = "destroy"
-    command    = var.disk_destroy_local_exec_command_and_continue
-    on_failure = "continue"
-  }
 }
 
 # https://www.terraform.io/docs/providers/google/r/compute_instance.html

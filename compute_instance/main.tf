@@ -1,53 +1,98 @@
-locals {
-  hostname      = var.hostname == "" ? "default" : var.hostname
-  num_instances = length(var.static_ips) == 0 ? var.num_instances : length(var.static_ips)
-
-  static_ips = concat(var.static_ips, ["NOT_AN_IP"])
-  project_id = length(regexall("/projects/([^/]*)", var.instance_template)) > 0 ? flatten(regexall("/projects/([^/]*)", var.instance_template))[0] : null
-
-  network_interface = length(format("%s%s", var.network, var.subnetwork)) == 0 ? [] : [1]
+resource "google_compute_address" "instances" {
+  count  = var.amount
+  name   = "${var.name_prefix}-${count.index}"
+  region = var.region
 }
 
-data "google_compute_zones" "available" {
-  project = local.project_id
-  region  = var.region
+resource "google_compute_disk" "instances" {
+  count = var.amount
+
+  name = "${var.name_prefix}-${count.index + 1}"
+  type = var.disk_type
+  size = var.disk_size
+  # optional
+  zone = var.zone
+
+  image = var.disk_image
+
+  provisioner "local-exec" {
+    command    = var.disk_create_local_exec_command_or_fail
+    on_failure = "fail"
+  }
+
+  provisioner "local-exec" {
+    command    = var.disk_create_local_exec_command_and_continue
+    on_failure = "continue"
+  }
+
+  provisioner "local-exec" {
+    when       = "destroy"
+    command    = var.disk_destroy_local_exec_command_or_fail
+    on_failure = "fail"
+  }
+
+  provisioner "local-exec" {
+    when       = "destroy"
+    command    = var.disk_destroy_local_exec_command_and_continue
+    on_failure = "continue"
+  }
 }
 
-resource "google_compute_instance_from_template" "compute_instance" {
-  provider            = google
-  count               = local.num_instances
-  name                = var.add_hostname_suffix ? format("%s%s%s", local.hostname, var.hostname_suffix_separator, format("%03d", count.index + 1)) : local.hostname
-  project             = local.project_id
-  zone                = var.zone == null ? data.google_compute_zones.available.names[count.index % length(data.google_compute_zones.available.names)] : var.zone
-  deletion_protection = var.deletion_protection
+# https://www.terraform.io/docs/providers/google/r/compute_instance.html
+resource "google_compute_instance" "instances" {
+  count = var.amount
 
+  name         = "${var.name_prefix}-${count.index + 1}"
+  zone         = var.zone
+  machine_type = var.machine_type
 
-  dynamic "network_interface" {
-    for_each = local.network_interface
+  boot_disk = {
+    source      = "${google_compute_disk.instances.*.name[count.index]}"
+    auto_delete = false
+  }
 
-    content {
-      network            = var.network
-      subnetwork         = var.subnetwork
-      subnetwork_project = var.subnetwork_project
-      network_ip         = length(var.static_ips) == 0 ? "" : element(local.static_ips, count.index)
-      dynamic "access_config" {
-        for_each = var.access_config
-        content {
-          nat_ip       = access_config.value.nat_ip
-          network_tier = access_config.value.network_tier
-        }
-      }
+  # reference: https://cloud.google.com/compute/docs/storing-retrieving-metadata
+  metadata {
+    description = "Managed by Terraform"
+    user-data   = replace(replace(var.user_data, "$$ZONE", var.zone), "$$REGION", var.region)
+    ssh-keys    = "${var.username}:${file("${var.public_key_path}")}"
+  }
 
-      dynamic "alias_ip_range" {
-        for_each = var.alias_ip_ranges
-        content {
-          ip_cidr_range         = alias_ip_range.value.ip_cidr_range
-          subnetwork_range_name = alias_ip_range.value.subnetwork_range_name
-        }
-      }
+  network_interface = {
+    network = "default"
+
+    access_config = {
+      nat_ip = "${google_compute_address.instances.*.address[count.index]}"
     }
   }
 
-  source_instance_template = var.instance_template
+  scheduling {
+    on_host_maintenance = "MIGRATE"
+    automatic_restart   = var.automatic_restart
+  }
+
+  allow_stopping_for_update = "true"
 }
 
+
+# resource "null_resource" "provisioner" {
+#   triggers {
+#     vm                            = "${google_compute_instance.instances.name}"
+#   }
+
+#   # generic connection block for all provisioners
+#   connection {
+#     type                          = "ssh"
+#     host                          = "${google_compute_address.instances.*.address[count.index]}"
+#     user                          = "${var.username}"
+#     private_key                   = "${file("${var.private_key_path}")}"
+#   }
+
+# reference: https://github.com/jonmorehouse/terraform-provisioner-ansible
+# fails: not maintained, not compatible with latest tf version
+# provisioner "ansible" {
+#   playbook = "awx.yml"
+#   hosts = ["all"]
+# }
+
+# }

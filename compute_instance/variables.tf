@@ -1,86 +1,96 @@
 variable "region" {
-  description = "GC region"
-  default     = "europe-west4"
+  description = "gcp region to use"
+  default     = "europe-west1"
 }
 
-variable "zone" {
-  description = "GC zone"
-  default     = "europe-west4-c"
+variable "project" {
+  description = "the id of the project in which the resource belongs to"
 }
 
-variable "amount" {
-  description = "Number of VMs"
-  default     = "1"
-}
-
-variable "name_prefix" {
-  description = "hostname format: name_prefix-amount"
-  default     = "vm"
+variable "name" {
+  description = "name of the gce instance"
 }
 
 variable "machine_type" {
-  description = "List of VM sizes: https://github.com/Eimert/terraform-google-compute-engine-instance#machine_type"
-  default     = "n1-standard-2"
+  description = "instance type to use"
+  default     = "n1-standard-1"
 }
 
-variable "user_data" {
-  description = "VM description."
-  default     = "Managed by terraform plan https://github.com/Eimert/terraform-google-compute-engine-instance"
+variable "zone" {
+  description = "zone to launch your instance in"
+  default     = "europe-west1-b"
 }
 
-variable "disk_type" {
-  description = "pd-standard or pd-ssd"
-  default     = "pd-standard"
+variable "tags" {
+  description = "tags you want for your instance"
+  default     = []
 }
 
-variable "disk_size" {
-  description = "Primary disk' size in GB"
-  default     = "20"
-}
-variable "disk_image" {
-  description = "[Available OS images/templates](https://cloud.google.com/compute/docs/images)"
-  default     = "centos-cloud/centos-7"
+variable "image" {
+  description = "image id to use for your instance"
+  default     = "centos-7-v20200429"
 }
 
-variable "disk_create_local_exec_command_or_fail" {
-  default = ":"
+variable "network" {
+  description = "The name or self_link of the network to attach this interface to"
+  default     = "default"
+}
+variable "subnetwork" {
+  description = "The name or self_link of the subnetwork to attach this interface to"
+  default     = "default"
 }
 
-variable "disk_create_local_exec_command_and_continue" {
-  default = ":"
+variable "allow_stopping_for_update" {
+  description = "allows Terraform to stop the instance to update its properties"
+  default     = false
 }
 
-variable "disk_destroy_local_exec_command_or_fail" {
-  default = ":"
+variable "can_ip_forward" {
+  description = "allow sending and receiving of packets with non-matching source or destination IPs"
+  default     = false
 }
 
-variable "disk_destroy_local_exec_command_and_continue" {
-  default = ":"
+variable "description" {
+  description = "instance description"
+  default     = ""
 }
 
-variable "automatic_restart" {
-  description = "Allow google cloud to restart VM for patching (recommended)."
-  default     = "true"
+variable "deletion_protection" {
+  description = "enable deletion protection on this instance"
+  default     = false
 }
 
-variable "dns_name" {
-  description = "Descriptive name for dns_zone. Use module google-managed-dns-zone to create."
+variable "labels" {
+  description = " a set of key/value label pairs to assign to the instance"
+  default     = {}
 }
 
-variable "dns_zone" {
-  description = "The DNS zone that is pointing to Google' nameservers (if any). A.k.a. Google' DNS SOA (start of authority). Required suffix: . (dot). Use module google-managed-dns-zone to create."
+variable "metadata" {
+  description = "metadata key/value pairs to make available from within the instance"
+  default     = {}
 }
 
-variable "dns_record_name" {
-  description = "DNS record type == A. For example: 'tower-dev' will become tower-dev.cloud.example.com"
+variable "metadata_startup_script" {
+  description = "an alternative to using the startup-script metadata key"
+  default     = ""
 }
 
-variable "username" {
-  description = "username of user account to be created"
-  default     = "google"
+variable "scopes" {
+  description = "a list of service scopes"
+  default     = ["cloud-platform"]
 }
 
-variable "public_key_path" {
-  description = "Only private-key auth is enabled by default. Use `ssh-keygen -t rsa` to generate a public-private keypair."
-  default     = "~/.ssh/id_rsa.pub"
+variable "protocol" {
+  description = "the name of the protocols to allow"
+  default     = "tcp"
+}
+
+variable "size" {
+  description = "size of the instance in GB"
+  default     = 50
+}
+
+variable "type" {
+  description = "size of the instance in GB"
+  default     = "pd-ssd"
 }

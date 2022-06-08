@@ -5,7 +5,7 @@ variable "name" {
 
 variable "location" {
   type        = string
-  default     = null
+  default     = "EU"
   description = "The GCS region."
 }
 
@@ -29,7 +29,7 @@ variable "force_destroy" {
 
 variable "storage_class" {
   type        = string
-  default     = "REGIONAL"
+  default     = "STANDARD"
   description = "The Storage Class of the new bucket. Allowed values: `STANDARD`, `MULTI_REGIONAL`, `REGIONAL`, `NEARLINE`, `COLDLINE`, `ARCHIVE`."
 
   validation {

@@ -1,12 +1,10 @@
 resource "google_storage_bucket" "default" {
-  count = var.enabled ? 1 : 0
-
   name          = var.name
   location      = var.location
   project       = var.project
   storage_class = var.storage_class
   force_destroy = var.force_destroy
-  labels        = module.this.tags
+  labels        = var.labels
 
   dynamic "retention_policy" {
     for_each = var.retention_policy == null ? [] : [var.retention_policy]

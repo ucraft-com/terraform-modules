@@ -1,7 +1,7 @@
 resource "google_storage_bucket" "default" {
   count = var.enabled ? 1 : 0
 
-  name          = module.this.id
+  name          = var.name
   location      = var.location
   project       = var.project
   storage_class = var.storage_class

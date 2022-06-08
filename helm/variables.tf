@@ -36,3 +36,10 @@ variable "repository" {
   description = "Helm repository"
   type        = string
 }
+
+
+variable "prevent_destroy" {
+  description = "Helm prevent destroy"
+  type        = bool
+  default     = false
+}

@@ -44,4 +44,8 @@ resource "helm_release" "this" {
       value = item.value.value
     }
   }
+  lifecycle {
+    prevent_destroy = var.prevent_destroy
+  }
+
 }

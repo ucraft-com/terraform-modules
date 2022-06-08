@@ -1,3 +1,8 @@
+variable "name" {
+  type        = string
+  description = "The GCS storage name"
+}
+
 variable "location" {
   type        = string
   default     = null

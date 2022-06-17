@@ -68,5 +68,5 @@ variable "provisioned_iops" {
 variable "snapshot" {
   description = "The source snapshot used to create this disk"
   type        = string
-  default     = "snapshot"
+  default     = null
 }

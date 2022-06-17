@@ -38,6 +38,7 @@ variable "labels" {
 variable "image" {
   description = "The image from which to initialize this disk"
   type        = string
+  default     = null
 }
 
 variable "physical_block_size_bytes" {

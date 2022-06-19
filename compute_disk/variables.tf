@@ -44,7 +44,7 @@ variable "image" {
 variable "physical_block_size_bytes" {
   description = "Physical block size of the persistent disk, in bytes"
   type        = number
-  default     = 0
+  default     = 4096
 }
 
 variable "description" {

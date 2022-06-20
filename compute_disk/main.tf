@@ -12,4 +12,9 @@ resource "google_compute_disk" "disk" {
   snapshot                  = var.snapshot
   project                   = var.project
 
+  lifecycle {
+    ignore_changes = [labels]
+  }
+
+
 }

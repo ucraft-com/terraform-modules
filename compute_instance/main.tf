@@ -14,11 +14,6 @@ resource "google_compute_instance" "default" {
     }
   }
 
-  scratch_disk {
-    interface = "SCSI"
-
-  }
-
   network_interface {
     network    = var.network
     subnetwork = var.subnetwork

@@ -60,6 +60,11 @@ variable "deletion_protection" {
   default     = false
 }
 
+variable "automatic_restart" {
+  description = "Specifies if the instance should be restarted if it was terminated by Compute Engine (not a user)"
+  default     = false
+}
+
 variable "labels" {
   description = " a set of key/value label pairs to assign to the instance"
   default     = {}

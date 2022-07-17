@@ -20,7 +20,9 @@ resource "google_compute_instance" "default" {
 
     access_config {}
   }
-
+  scheduling {
+    automatic_restart = var.automatic_restart
+  }
   allow_stopping_for_update = var.allow_stopping_for_update
   can_ip_forward            = var.can_ip_forward
   description               = var.description
@@ -31,6 +33,11 @@ resource "google_compute_instance" "default" {
 
   service_account {
     scopes = var.scopes
+  }
+  lifecycle {
+    ignore_changes = [
+      metadata, attached_disk
+    ]
   }
 }
 

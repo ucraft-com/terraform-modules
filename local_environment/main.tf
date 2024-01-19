@@ -32,3 +32,38 @@ resource "local_file" "env_file" {
   depends_on = [resource.null_resource.clone_repo]
 
 }
+
+data "template_file" "supervisor" {
+  template = file(var.supervisor_template_path)
+
+  vars = {
+    service_name = var.service_name
+    service_repo = var.service_repo
+  }
+}
+
+resource "local_file" "supervisor_file" {
+  count      = var.supervisor_file != null ? ((anytrue([for suffix in var.valid_suffixes_supervisor : endswith(var.proxy_pass, suffix)])) != true ? 1 : 0) : 0
+  content    = data.template_file.supervisor.rendered
+  filename   = var.supervisor_file
+  depends_on = [resource.null_resource.clone_repo]
+
+}
+data "template_file" "nginx" {
+  template = file(var.nginx_template_path)
+
+  vars = {
+    service_name = var.service_name
+    server_host  = var.server_host
+    proxy_pass   = var.proxy_pass
+    proxy_header = anytrue([for suffix in var.valid_suffixes_supervisor : endswith(var.proxy_pass, suffix)]) == true ? var.proxy_pass : "$host"
+  }
+}
+
+resource "local_file" "nginx_file" {
+  count      = endswith(var.nginx_template_path, "none") != true ? ((anytrue([for suffix in var.valid_suffixes_supervisor : endswith(var.server_host, suffix)])) != true ? 1 : 0) : 0
+  content    = data.template_file.nginx.rendered
+  filename   = var.nginx_file
+  depends_on = [resource.null_resource.clone_repo]
+
+}

@@ -16,7 +16,7 @@ variable "env_file" {
 variable "supervisor_template_path" {
   description = "supervisor template path"
   type        = string
-  default     = "templates/supervisord/supervisord.ini"
+  default     = "terraform/config/templates/supervisord/supervisord.ini"
 }
 variable "supervisor_file" {
   description = "supervisor template path"
@@ -36,7 +36,7 @@ variable "nginx_file" {
 variable "microservice_catalog_path" {
   description = "Microservice Catalog Folder Path"
   type        = string
-  default     = "../../microservice_catalog"
+  default     = "data_volummes/microservice_catalog"
 }
 variable "clone_branch" {
   description = "Clone Branch"

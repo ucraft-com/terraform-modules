@@ -1,7 +1,7 @@
 variable "config_path" {
   description = "Relative path to the config file"
   type        = string
-  default     = "/../../config.json"
+  default     = "config.json"
 }
 variable "env_template_path" {
   description = "env template path"
@@ -16,7 +16,7 @@ variable "env_file" {
 variable "supervisor_template_path" {
   description = "supervisor template path"
   type        = string
-  default     = "terraform/config/templates/supervisord/supervisord.ini"
+  default     = "./terraform/config/templates/supervisord/supervisord.ini"
 }
 variable "supervisor_file" {
   description = "supervisor template path"
@@ -36,7 +36,7 @@ variable "nginx_file" {
 variable "microservice_catalog_path" {
   description = "Microservice Catalog Folder Path"
   type        = string
-  default     = "data_volummes/microservice_catalog"
+  default     = "data_volumes/microservice_catalog"
 }
 variable "clone_branch" {
   description = "Clone Branch"
@@ -67,12 +67,22 @@ variable "server_host" {
   type        = string
   default     = "remote"
 }
+variable "proxy_pass_default" {
+  description = "A string of variables to pass to the template"
+  type        = string
+  default     = ""
+}
 variable "proxy_pass" {
   description = "A string of variables to pass to the template"
   type        = string
   default     = ""
 }
-variable "proxy_header" {
+variable "proxy_pass_accounts_admin" {
+  description = "A string of variables to pass to the template"
+  type        = string
+  default     = ""
+}
+variable "proxy_pass_public" {
   description = "A string of variables to pass to the template"
   type        = string
   default     = ""

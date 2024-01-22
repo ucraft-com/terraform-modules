@@ -53,11 +53,14 @@ data "template_file" "nginx" {
   template = file(var.nginx_template_path)
 
   vars = {
-    service_name = var.service_name
-    server_host  = var.server_host
-    proxy_pass   = var.proxy_pass
-    service_repo = var.service_repo
-    proxy_header = anytrue([for suffix in var.valid_suffixes_supervisor : endswith(var.proxy_pass, suffix)]) == true ? var.proxy_pass : "$host"
+    service_name                = var.service_name
+    server_host                 = var.server_host
+    proxy_pass                  = var.proxy_pass
+    proxy_pass_public           = var.proxy_pass_public
+    proxy_pass_accounts_admin   = var.proxy_pass_accounts_admin
+    proxy_header_accounts_admin = anytrue([for suffix in var.valid_suffixes_supervisor : endswith(var.proxy_pass_accounts_admin, suffix)]) == true ? var.proxy_pass_accounts_admin : var.proxy_pass_default
+    service_repo                = var.service_repo
+    proxy_header                = anytrue([for suffix in var.valid_suffixes_supervisor : endswith(var.proxy_pass, suffix)]) == true ? var.proxy_pass : var.proxy_pass_default
   }
 }
 

@@ -56,6 +56,7 @@ data "template_file" "nginx" {
     service_name = var.service_name
     server_host  = var.server_host
     proxy_pass   = var.proxy_pass
+    service_repo = var.service_repo
     proxy_header = anytrue([for suffix in var.valid_suffixes_supervisor : endswith(var.proxy_pass, suffix)]) == true ? var.proxy_pass : "$host"
   }
 }

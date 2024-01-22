@@ -70,7 +70,7 @@ variable "server_host" {
 variable "proxy_pass_default" {
   description = "A string of variables to pass to the template"
   type        = string
-  default     = ""
+  default     = "$host"
 }
 variable "proxy_pass" {
   description = "A string of variables to pass to the template"
@@ -86,6 +86,11 @@ variable "proxy_pass_public" {
   description = "A string of variables to pass to the template"
   type        = string
   default     = ""
+}
+variable "domain" {
+  description = "A string of variables to pass to the template"
+  type        = string
+  default     = "ucraft.dev"
 }
 variable "valid_suffixes_supervisor" {
   description = "List of valid suffixes for server_host"

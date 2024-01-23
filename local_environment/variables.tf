@@ -18,8 +18,18 @@ variable "supervisor_template_path" {
   type        = string
   default     = "./terraform/config/templates/supervisord/supervisord.ini"
 }
+variable "migration_version_template_path" {
+  description = "migration-version template path"
+  type        = string
+  default     = "./terraform/config/templates/.migration-version"
+}
 variable "supervisor_file" {
   description = "supervisor template path"
+  type        = string
+  default     = null
+}
+variable "migration_version_file" {
+  description = "migration template path"
   type        = string
   default     = null
 }
@@ -53,6 +63,11 @@ variable "github_base" {
   default     = "git@github.com:ucraft-com"
 }
 variable "username" {
+  description = "A string of variables to pass to the template"
+  type        = string
+  default     = null
+}
+variable "migration_version" {
   description = "A string of variables to pass to the template"
   type        = string
   default     = null
@@ -96,4 +111,9 @@ variable "valid_suffixes_supervisor" {
   description = "List of valid suffixes for server_host"
   type        = list(string)
   default     = [".ucraft.ai", "ucraft.ai/"]
+}
+variable "valid_prefixes_supervisor" {
+  description = "List of valid suffixes for server_host"
+  type        = list(string)
+  default     = ["localhost"]
 }

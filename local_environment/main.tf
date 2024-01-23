@@ -1,3 +1,12 @@
+locals {
+  has_nginx_template       = endswith(var.nginx_template_path, "none") != true
+  has_valid_suffix         = anytrue([for suffix in var.valid_suffixes_supervisor : endswith(var.proxy_pass, suffix)])
+  has_valid_prefix         = anytrue([for prefix in var.valid_prefixes_supervisor : startswith(var.proxy_pass, prefix)])
+  has_server_host          = anytrue([for suffix in var.valid_suffixes_supervisor : endswith(var.server_host, suffix)])
+  has_valid_accounts_admin = anytrue([for suffix in var.valid_suffixes_supervisor : endswith(var.proxy_pass_accounts_admin, suffix)])
+}
+
+
 resource "null_resource" "clone_repo" {
 
   triggers = {
@@ -43,7 +52,7 @@ data "template_file" "supervisor" {
 }
 
 resource "local_file" "supervisor_file" {
-  count      = var.supervisor_file != null ? ((anytrue([for suffix in var.valid_suffixes_supervisor : endswith(var.proxy_pass, suffix)])) != true ? 1 : 0) : 0
+  count      = var.supervisor_file != null && !local.has_valid_suffix && !local.has_valid_prefix ? 1 : 0
   content    = data.template_file.supervisor.rendered
   filename   = var.supervisor_file
   depends_on = [resource.null_resource.clone_repo]
@@ -59,16 +68,29 @@ data "template_file" "nginx" {
     proxy_pass_public           = var.proxy_pass_public
     proxy_pass_accounts_admin   = var.proxy_pass_accounts_admin
     domain                      = var.domain
-    proxy_header_accounts_admin = anytrue([for suffix in var.valid_suffixes_supervisor : endswith(var.proxy_pass_accounts_admin, suffix)]) == true ? var.proxy_pass_accounts_admin : var.proxy_pass_default
+    proxy_header_accounts_admin = local.has_valid_accounts_admin ? var.proxy_pass_accounts_admin : var.proxy_pass_default
     service_repo                = var.service_repo
-    proxy_header                = anytrue([for suffix in var.valid_suffixes_supervisor : endswith(var.proxy_pass, suffix)]) == true ? var.proxy_pass : var.proxy_pass_default
+    proxy_header                = local.has_valid_suffix ? var.proxy_pass : var.proxy_pass_default
   }
 }
-
 resource "local_file" "nginx_file" {
-  count      = endswith(var.nginx_template_path, "none") != true ? ((anytrue([for suffix in var.valid_suffixes_supervisor : endswith(var.server_host, suffix)])) != true ? 1 : 0) : 0
+  count      = local.has_nginx_template ? 1 : 0
   content    = data.template_file.nginx.rendered
   filename   = var.nginx_file
   depends_on = [resource.null_resource.clone_repo]
 
+}
+data "template_file" "migration_version" {
+  template = file(var.migration_version_template_path)
+
+  vars = {
+    migration_version = var.migration_version
+  }
+}
+
+resource "local_file" "migration_version_file" {
+  count      = var.migration_version_file != null ? 1 : 0
+  content    = data.template_file.migration_version.rendered
+  filename   = var.migration_version_file
+  depends_on = [resource.null_resource.clone_repo]
 }

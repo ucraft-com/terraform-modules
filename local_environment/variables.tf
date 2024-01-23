@@ -115,5 +115,5 @@ variable "valid_suffixes_supervisor" {
 variable "valid_prefixes_supervisor" {
   description = "List of valid suffixes for server_host"
   type        = list(string)
-  default     = ["localhost", "127.16.10.1"]
+  default     = ["localhost"]
 }

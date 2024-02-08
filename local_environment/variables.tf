@@ -102,6 +102,11 @@ variable "proxy_pass_public" {
   type        = string
   default     = ""
 }
+variable "proxy_pass_proxy" {
+  description = "A string of variables to pass to the template"
+  type        = string
+  default     = ""
+}
 variable "domain" {
   description = "A string of variables to pass to the template"
   type        = string

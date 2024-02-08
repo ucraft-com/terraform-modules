@@ -30,7 +30,8 @@ data "template_file" "env" {
   template = file(var.env_template_path)
 
   vars = {
-    username = var.username
+    username         = var.username
+    proxy_pass_proxy = var.proxy_pass_proxy
   }
 }
 
@@ -94,3 +95,13 @@ resource "local_file" "migration_version_file" {
   filename   = var.migration_version_file
   depends_on = [resource.null_resource.clone_repo]
 }
+
+# resource "null_resource" "install_templates" {
+#   for_each = toset(var.templates)
+#   provisioner "local-exec" {
+#     command = <<-EOF
+#       LATEST_FOLDER=$(gsutil ls gs://templates-uc-next/ | grep -E "^.*/[0-9]+(\\.[0-9]+){0,2}/" | sort | tail -n 1)
+#       gsutil cp "$${LATEST_FOLDER}${each.key}.tar.gz" .
+#     EOF
+#   }
+# }

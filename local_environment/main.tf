@@ -66,6 +66,7 @@ data "template_file" "nginx" {
     service_name                = var.service_name
     server_host                 = var.server_host
     proxy_pass                  = var.proxy_pass
+    proxy_pass_proxy            = var.proxy_pass_proxy
     proxy_pass_public           = var.proxy_pass_public
     proxy_pass_accounts_admin   = var.proxy_pass_accounts_admin
     domain                      = var.domain

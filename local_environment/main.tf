@@ -30,8 +30,9 @@ data "template_file" "env" {
   template = file(var.env_template_path)
 
   vars = {
-    username         = var.username
-    proxy_pass_proxy = var.proxy_pass_proxy
+    username          = var.username
+    proxy_pass_proxy  = var.proxy_pass_proxy
+    proxy_pass_public = var.proxy_pass_public
   }
 }
 

@@ -37,7 +37,7 @@ data "template_file" "env" {
 }
 
 resource "local_file" "env_file" {
-  count      = var.env_file != null ? 1 : 0
+  count      = var.env_file != "none" ? 1 : 0
   content    = data.template_file.env.rendered
   filename   = var.env_file
   depends_on = [resource.null_resource.clone_repo]

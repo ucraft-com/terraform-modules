@@ -107,6 +107,11 @@ variable "proxy_pass_proxy" {
   type        = string
   default     = ""
 }
+variable "none" {
+  description = "A string of variables to none to the template"
+  type        = string
+  default     = "none"
+}
 variable "domain" {
   description = "A string of variables to pass to the template"
   type        = string

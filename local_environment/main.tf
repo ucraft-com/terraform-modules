@@ -1,5 +1,7 @@
 locals {
-  has_nginx_template       = endswith(var.nginx_template_path, "none") != true
+  has_nginx_template       = endswith(var.nginx_template_path, var.none) != true
+  env_file                 = endswith(var.env_file, var.none) != true
+  service_repo             = endswith(var.service_repo, var.none) != true
   has_valid_suffix         = anytrue([for suffix in var.valid_suffixes_supervisor : endswith(var.proxy_pass, suffix)])
   has_valid_prefix         = anytrue([for prefix in var.valid_prefixes_supervisor : startswith(var.proxy_pass, prefix)])
   has_server_host          = anytrue([for suffix in var.valid_suffixes_supervisor : endswith(var.server_host, suffix)])
@@ -8,6 +10,7 @@ locals {
 
 
 resource "null_resource" "clone_repo" {
+  count = local.service_repo ? 1 : 0
 
   triggers = {
     always_run = "${timestamp()}"
@@ -36,8 +39,10 @@ data "template_file" "env" {
   }
 }
 
+
+
 resource "local_file" "env_file" {
-  count      = var.env_file != "none" ? 1 : 0
+  count      = local.env_file ? 1 : 0
   content    = data.template_file.env.rendered
   filename   = var.env_file
   depends_on = [resource.null_resource.clone_repo]
@@ -54,7 +59,7 @@ data "template_file" "supervisor" {
 }
 
 resource "local_file" "supervisor_file" {
-  count      = var.supervisor_file != null && !local.has_valid_suffix && !local.has_valid_prefix ? 1 : 0
+  count      = !local.has_valid_suffix && !local.has_valid_prefix ? 1 : 0
   content    = data.template_file.supervisor.rendered
   filename   = var.supervisor_file
   depends_on = [resource.null_resource.clone_repo]

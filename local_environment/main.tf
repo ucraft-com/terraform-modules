@@ -35,6 +35,8 @@ data "template_file" "env" {
     username          = var.username
     proxy_pass_proxy  = var.proxy_pass_proxy
     proxy_pass_public = var.proxy_pass_public
+    protocol          = var.protocol
+    domain            = var.domain
   }
 }
 

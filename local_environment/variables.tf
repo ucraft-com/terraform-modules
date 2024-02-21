@@ -117,6 +117,11 @@ variable "domain" {
   type        = string
   default     = "ucraft.dev"
 }
+variable "protocol" {
+  description = "A string of variables to pass to the template"
+  type        = string
+  default     = "https"
+}
 variable "valid_suffixes_supervisor" {
   description = "List of valid suffixes for server_host"
   type        = list(string)

@@ -4,7 +4,6 @@ locals {
   service_repo             = endswith(var.service_repo, var.none) != true
   has_valid_suffix         = anytrue([for suffix in var.valid_suffixes_supervisor : endswith(var.proxy_pass, suffix)])
   has_valid_prefix         = anytrue([for prefix in var.valid_prefixes_supervisor : startswith(var.proxy_pass, prefix)])
-  has_server_host          = anytrue([for suffix in var.valid_suffixes_supervisor : endswith(var.server_host, suffix)])
   has_valid_accounts_admin = anytrue([for suffix in var.valid_suffixes_supervisor : endswith(var.proxy_pass_accounts_admin, suffix)])
 }
 

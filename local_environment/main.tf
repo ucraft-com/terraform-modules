@@ -80,6 +80,7 @@ data "template_file" "nginx" {
     proxy_header_accounts_admin = local.has_valid_accounts_admin ? var.proxy_pass_accounts_admin : var.proxy_pass_default
     service_repo                = var.service_repo
     proxy_header                = local.has_valid_suffix ? var.proxy_pass : var.proxy_pass_default
+    locales_path                = var.locales_path
   }
 }
 resource "local_file" "nginx_file" {

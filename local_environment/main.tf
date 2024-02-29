@@ -40,15 +40,22 @@ data "template_file" "env" {
   }
 }
 
+data "external" "update_env" {
+  program = ["python3", "${path.module}/update_env.py"]
 
+  query = {
+    original_env_content = data.template_file.env.rendered
+    env_vars_to_merge    = jsonencode(var.envs)
+  }
+}
 
 resource "local_file" "env_file" {
   count      = local.env_file ? 1 : 0
-  content    = data.template_file.env.rendered
-  filename   = var.env_file
+  content  = data.external.update_env.result["result"]
+  filename = var.env_file
   depends_on = [resource.null_resource.clone_repo]
-
 }
+
 
 data "template_file" "supervisor" {
   template = file(var.supervisor_template_path)
@@ -104,13 +111,3 @@ resource "local_file" "migration_version_file" {
   filename   = var.migration_version_file
   depends_on = [resource.null_resource.clone_repo]
 }
-
-# resource "null_resource" "install_templates" {
-#   for_each = toset(var.templates)
-#   provisioner "local-exec" {
-#     command = <<-EOF
-#       LATEST_FOLDER=$(gsutil ls gs://templates-uc-next/ | grep -E "^.*/[0-9]+(\\.[0-9]+){0,2}/" | sort | tail -n 1)
-#       gsutil cp "$${LATEST_FOLDER}${each.key}.tar.gz" .
-#     EOF
-#   }
-# }

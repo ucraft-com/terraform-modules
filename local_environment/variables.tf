@@ -137,3 +137,6 @@ variable "valid_prefixes_supervisor" {
   type        = list(string)
   default     = ["localhost", "host.docker.internal", "172.16.13", "172.16.12.2:9001"]
 }
+variable "envs" {
+  type = map(string)
+}

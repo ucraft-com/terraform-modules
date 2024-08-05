@@ -130,7 +130,7 @@ variable "locales_path" {
 variable "styles_path" {
   description = "A string of variables to pass to the template"
   type        = string
-  default     = "https"
+  default     = "/styles"
 }
 variable "valid_suffixes_supervisor" {
   description = "List of valid suffixes for server_host"

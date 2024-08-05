@@ -88,6 +88,7 @@ data "template_file" "nginx" {
     service_repo                = var.service_repo
     proxy_header                = local.has_valid_suffix ? var.proxy_pass : var.proxy_pass_default
     locales_path                = var.locales_path
+    styles_path                = var.styles_path
   }
 }
 resource "local_file" "nginx_file" {
